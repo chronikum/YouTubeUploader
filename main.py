@@ -37,12 +37,9 @@ def main():
     login_using_cookie_file(driver, cookie_file=args.login_cookies)
     driver.get("https://www.youtube.com")
 
-    assert "YouTube" in driver.title
-
     try:
         confirm_logged_in(driver)
         driver.get("https://studio.youtube.com")
-        assert "Channel dashboard" in driver.title
         driver.file_detector = LocalFileDetector()
         upload_file(
             driver,
