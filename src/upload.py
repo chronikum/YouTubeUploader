@@ -76,10 +76,15 @@ def _set_visibility_public(driver: WebDriver):
     WebDriverWait(driver, 20).until(
         EC.element_to_be_clickable((By.XPATH, '//*[@id="onRadio"]'))
     ).click()
+    sleep(10)
     logging.info("Clicking on visibility!")
+    sleep(10)
     skip_current_element(driver)
+    sleep(10)
     go_key_down_in_element(driver)
+    sleep(10)
     go_key_down_in_element(driver)
+    sleep(10)
 
 def _set_basic_settings(driver: WebDriver, title: str, description: str, thumbnail_path: str = None):
     sleep(10)
