@@ -10,6 +10,9 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
+from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.file_detector import LocalFileDetector
 
 
 def upload_file(
@@ -28,9 +31,9 @@ def upload_file(
     ).click()
     video_input = driver.find_element_by_xpath('//input[@type="file"]')
     video_input.send_keys(video_path)
-
+    
+    logging.info("Uploading video...")
     _set_basic_settings(driver, title, description, thumbnail_path)
-    _set_advanced_settings(driver, game, kids)
     # Go to visibility settings
     for i in range(3):
         WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "next-button"))).click()
@@ -67,31 +70,54 @@ def _wait_for_processing(driver):
         sleep(5)
         current_progress = progress_label.get_attribute("textContent")
 
+# skips the currently selected element
+def skip_current_element(driver: WebDriver):
+    currentObject = driver.switch_to.active_element
+    currentObject.send_keys(Keys.TAB)
 
 def _set_basic_settings(driver: WebDriver, title: str, description: str, thumbnail_path: str = None):
-    title_input: WebElement = WebDriverWait(driver, 20).until(
-        EC.element_to_be_clickable(
-            (
-                By.XPATH,
-                '//ytcp-mention-textbox[@label="Title"]//div[@id="textbox"]',
 
-            )
-        )
-    )
-
-    # Input meta data (title, description, etc ... )
-    description_input: WebElement = driver.find_element_by_xpath(
-        '//ytcp-mention-textbox[@label="Description"]//div[@id="textbox"]'
-    )
-    thumbnail_input: WebElement = driver.find_element_by_css_selector(
-        "input#file-loader"
-    )
-
-    title_input.clear()
-    title_input.send_keys(title)
+    # title_input: WebElement = WebDriverWait(driver, 20).until(
+    #     EC.element_to_be_clickable(
+    #         (
+    #             By.XPATH,
+    #             '/html/body/ytcp-uploads-dialog/tp-yt-paper-dialog/div/ytcp-animatable[1]/ytcp-ve/ytcp-video-metadata-editor/div/ytcp-video-metadata-editor-basics/div[1]/ytcp-social-suggestions-textbox/ytcp-form-input-container/div[1]/div[2]/div/ytcp-social-suggestion-input/div',
+    #         )
+    #     )
+    # )
+    sleep(10)
+    title_object = driver.switch_to.active_element
+    title_object.send_keys(title + " " + "#shorts")
+    logging.info("Setting title now!")
+    sleep(1)
+    title_object.send_keys(Keys.ENTER)
+    title_object = driver.switch_to.active_element
+    sleep(1)
+    skip_current_element(driver)
+    sleep(1)
+    skip_current_element(driver)
+    logging.info("Setting description now!")
+    description_input = driver.switch_to.active_element
     description_input.send_keys(description)
-    if thumbnail_path:
-        thumbnail_input.send_keys(thumbnail_path)
+    sleep(1)
+    skip_current_element(driver)
+    skip_current_element(driver)
+    sleep(1)
+    skip_current_element(driver)
+    sleep(1)
+    skip_current_element(driver)
+    sleep(1)
+    skip_current_element(driver)
+    sleep(1)
+    skip_current_element(driver)
+    sleep(1)
+    skip_current_element(driver)
+    sleep(2)
+    element_found = driver.switch_to.active_element
+    element_found.send_keys(Keys.DOWN)
+    logging.info("Setting for children: NO")
+    sleep(10)
+    logging.info("Completed basic settings. Now returning to main routine")
 
 
 def _set_advanced_settings(driver: WebDriver, game_title: str, made_for_kids: bool):

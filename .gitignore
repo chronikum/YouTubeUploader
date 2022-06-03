@@ -1,7 +1,12 @@
 .idea/
 geckodriver.log
 login-cookies.json
+cookies2.json
 __pycache__/
 uploads/**/*
 !uploads/.gitkeep
 .DS_Store
+cookies.json
+geckodriver
+.gitignore
+.gitignore
