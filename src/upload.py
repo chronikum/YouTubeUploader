@@ -85,6 +85,8 @@ def _set_visibility_public(driver: WebDriver):
     sleep(3)
     go_key_down_in_element(driver)
     sleep(5)
+    logging.info("Waiting to make sure upload is complete.")
+    sleep(60)
 
 def _set_basic_settings(driver: WebDriver, title: str, description: str, thumbnail_path: str = None):
     sleep(10)
