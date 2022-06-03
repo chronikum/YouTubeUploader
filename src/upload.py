@@ -34,22 +34,14 @@ def upload_file(
     
     logging.info("Uploading video...")
     _set_basic_settings(driver, title, description, thumbnail_path)
-    # Go to visibility settings
+    sleep(1)
+    logging.info("Now going to visibiity...")
     for i in range(3):
         WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "next-button"))).click()
-
-    _set_time(driver, upload_time)
-    _wait_for_processing(driver)
-    # Go back to endcard settings
-    driver.find_element_by_css_selector("#step-badge-1").click()
-    _set_endcard(driver)
-
-    for _ in range(2):
-        # Sometimes, the button is clickable but clicking it raises an error, so we add a "safety-sleep" here
-        sleep(5)
-        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "next-button"))).click()
-
-    sleep(5)
+    logging.info("Arrived at visibility page. Setting visibility to public...")
+    _set_visibility_public(driver)
+    logging.info("Visibility set to public. Now going to done button")
+    # Click on DONE
     WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "done-button"))).click()
 
     # Wait for the dialog to disappear
@@ -74,17 +66,22 @@ def _wait_for_processing(driver):
 def skip_current_element(driver: WebDriver):
     currentObject = driver.switch_to.active_element
     currentObject.send_keys(Keys.TAB)
+    
+def go_key_down_in_element(driver: WebDriver):
+    currentObject = driver.switch_to.active_element
+    currentObject.send_keys(Keys.DOWN)
+    
+# sets visibility of the video to public
+def _set_visibility_public(driver: WebDriver):
+    WebDriverWait(driver, 20).until(
+        EC.element_to_be_clickable((By.XPATH, '//*[@id="onRadio"]'))
+    ).click()
+    logging.info("Clicking on visibility!")
+    skip_current_element(driver)
+    go_key_down_in_element(driver)
+    go_key_down_in_element(driver)
 
 def _set_basic_settings(driver: WebDriver, title: str, description: str, thumbnail_path: str = None):
-
-    # title_input: WebElement = WebDriverWait(driver, 20).until(
-    #     EC.element_to_be_clickable(
-    #         (
-    #             By.XPATH,
-    #             '/html/body/ytcp-uploads-dialog/tp-yt-paper-dialog/div/ytcp-animatable[1]/ytcp-ve/ytcp-video-metadata-editor/div/ytcp-video-metadata-editor-basics/div[1]/ytcp-social-suggestions-textbox/ytcp-form-input-container/div[1]/div[2]/div/ytcp-social-suggestion-input/div',
-    #         )
-    #     )
-    # )
     sleep(10)
     title_object = driver.switch_to.active_element
     title_object.send_keys(title + " " + "#shorts")
@@ -118,50 +115,6 @@ def _set_basic_settings(driver: WebDriver, title: str, description: str, thumbna
     logging.info("Setting for children: NO")
     sleep(10)
     logging.info("Completed basic settings. Now returning to main routine")
-
-
-def _set_advanced_settings(driver: WebDriver, game_title: str, made_for_kids: bool):
-    # Open advanced options
-    driver.find_element_by_css_selector("#toggle-button").click()
-    if game_title:
-        game_title_input: WebElement = driver.find_element_by_css_selector(
-            ".ytcp-form-gaming > "
-            "ytcp-dropdown-trigger:nth-child(1) > "
-            ":nth-child(2) > div:nth-child(3) > input:nth-child(3)"
-        )
-        game_title_input.send_keys(game_title)
-
-        # Select first item in game drop down
-        WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable(
-                (
-                    By.CSS_SELECTOR,
-                    "#text-item-2",  # The first item is an empty item
-                )
-            )
-        ).click()
-
-    WebDriverWait(driver, 20).until(EC.element_to_be_clickable(
-        (By.NAME, "VIDEO_MADE_FOR_KIDS_MFK" if made_for_kids else "VIDEO_MADE_FOR_KIDS_NOT_MFK")
-    )).click()
-
-
-def _set_endcard(driver: WebDriver):
-    # Add endscreen
-    driver.find_element_by_css_selector("#endscreens-button").click()
-    sleep(5)
-
-    for i in range(1, 11):
-        try:
-            # Select endcard type from last video or first suggestion if no prev. video
-            driver.find_element_by_css_selector("div.card:nth-child(1)").click()
-            break
-        except (NoSuchElementException, ElementNotInteractableException):
-            logging.warning(f"Couldn't find endcard button. Retry in 5s! ({i}/10)")
-            sleep(5)
-
-    WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "save-button"))).click()
-
 
 def _set_time(driver: WebDriver, upload_time: datetime):
     # Start time scheduling
