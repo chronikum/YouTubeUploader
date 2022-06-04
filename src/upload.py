@@ -73,61 +73,54 @@ def go_key_down_in_element(driver: WebDriver):
     
 # sets visibility of the video to public
 def _set_visibility_public(driver: WebDriver):
-    WebDriverWait(driver, 20).until(
-        EC.element_to_be_clickable((By.XPATH, '//*[@id="onRadio"]'))
-    ).click()
-    sleep(5)
-    logging.info("Clicking on visibility!")
-    sleep(5)
-    skip_current_element(driver)
-    sleep(3)
-    go_key_down_in_element(driver)
-    sleep(3)
-    go_key_down_in_element(driver)
-    sleep(5)
-    logging.info("Waiting to make sure upload is complete.")
-    sleep(60)
+    try:
+        WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@id="onRadio"]'))
+        ).click()
+        sleep(5)
+        logging.info("Clicking on visibility!")
+        sleep(5)
+        skip_current_element(driver)
+        sleep(3)
+        go_key_down_in_element(driver)
+        sleep(3)
+        go_key_down_in_element(driver)
+        sleep(5)
+        logging.info("Waiting to make sure upload is complete.")
+        sleep(60)
+    except NoSuchElementException:
+        logging.info("No visibility element found")
 
 def _set_basic_settings(driver: WebDriver, title: str, description: str, thumbnail_path: str = None):
-    sleep(10)
-    title_object = driver.switch_to.active_element
-    title_object.send_keys(title + " " + "#shorts")
-    logging.info("Setting title now!")
-    sleep(1)
-    title_object.send_keys(Keys.ENTER)
-    title_object = driver.switch_to.active_element
-    sleep(1)
-    skip_current_element(driver)
-    sleep(1)
-    skip_current_element(driver)
-    logging.info("Setting description now!")
-    description_input = driver.switch_to.active_element
-    description_input.send_keys(description)
-    sleep(1)
-    # skip_current_element(driver)
-    # skip_current_element(driver)
-    # sleep(1)
-    # skip_current_element(driver)
-    # sleep(1)
-    # skip_current_element(driver)
-    # sleep(1)
-    # skip_current_element(driver)
-    # sleep(1)
-    # skip_current_element(driver)
-    # sleep(1)
-    # skip_current_element(driver)
-    # sleep(2)
-    element_found = WebDriverWait(driver, 20).until(
-        EC.element_to_be_clickable((By.XPATH, '//*[@id="offRadio"]'))
-    ).click()
-    element_found = driver.switch_to.active_element
-    element_found.send_keys(Keys.DOWN)
-    sleep(3)
-    element_found = driver.switch_to.active_element
-    element_found.send_keys(Keys.DOWN)
-    logging.info("Setting for children: NO")
-    sleep(3)
-    logging.info("Completed basic settings. Now returning to main routine")
+    try:
+        sleep(10)
+        title_object = driver.switch_to.active_element
+        title_object.send_keys(title + " " + "#shorts")
+        logging.info("Setting title now!")
+        sleep(1)
+        title_object.send_keys(Keys.ENTER)
+        title_object = driver.switch_to.active_element
+        sleep(1)
+        skip_current_element(driver)
+        sleep(1)
+        skip_current_element(driver)
+        logging.info("Setting description now!")
+        description_input = driver.switch_to.active_element
+        description_input.send_keys(description)
+        sleep(1)
+        element_found = WebDriverWait(driver, 20).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@id="offRadio"]'))
+        ).click()
+        element_found = driver.switch_to.active_element
+        element_found.send_keys(Keys.DOWN)
+        sleep(3)
+        element_found = driver.switch_to.active_element
+        element_found.send_keys(Keys.DOWN)
+        logging.info("Setting for children: NO")
+        sleep(3)
+        logging.info("Completed basic settings. Now returning to main routine")
+    except any:
+        logging.info("nono")
 
 def _set_time(driver: WebDriver, upload_time: datetime):
     # Start time scheduling
