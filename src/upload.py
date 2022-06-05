@@ -38,9 +38,9 @@ def upload_file(
     logging.info("Now going to visibiity...")
     for i in range(3):
         WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "next-button"))).click()
-    logging.info("Arrived at visibility page. Setting visibility to public...")
-    _set_visibility_public(driver)
-    logging.info("Visibility set to public. Now going to done button")
+    # logging.info("Arrived at visibility page. Setting visibility to public...")
+    # _set_visibility_public(driver)
+    # logging.info("Visibility set to public. Now going to done button")
     # Click on DONE
     WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "done-button"))).click()
 
@@ -107,18 +107,18 @@ def _set_basic_settings(driver: WebDriver, title: str, description: str, thumbna
         logging.info("Setting description now!")
         description_input = driver.switch_to.active_element
         description_input.send_keys(description)
-        sleep(1)
-        element_found = WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((By.XPATH, '//*[@id="offRadio"]'))
-        ).click()
-        element_found = driver.switch_to.active_element
-        element_found.send_keys(Keys.DOWN)
-        sleep(3)
-        element_found = driver.switch_to.active_element
-        element_found.send_keys(Keys.DOWN)
-        logging.info("Setting for children: NO")
-        sleep(3)
-        logging.info("Completed basic settings. Now returning to main routine")
+        # sleep(1)
+        # element_found = WebDriverWait(driver, 20).until(
+        #     EC.element_to_be_clickable((By.XPATH, '//*[@id="offRadio"]'))
+        # ).click()
+        # element_found = driver.switch_to.active_element
+        # element_found.send_keys(Keys.DOWN)
+        # sleep(3)
+        # element_found = driver.switch_to.active_element
+        # element_found.send_keys(Keys.DOWN)
+        # logging.info("Setting for children: NO")
+        # sleep(3)
+        # logging.info("Completed basic settings. Now returning to main routine")
     except any:
         logging.info("nono")
 
