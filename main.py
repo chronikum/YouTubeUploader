@@ -13,6 +13,10 @@ from src.upload import upload_file
 
 def main():
     logging.getLogger().setLevel(logging.INFO)
+    logging.basicConfig(
+        format='%(asctime)s %(levelname)-8s %(message)s',
+        level=logging.INFO,
+        datefmt='%Y-%m-%d %H:%M:%S')
 
     # Setup Selenium web driver
     parser = get_arg_parser()
